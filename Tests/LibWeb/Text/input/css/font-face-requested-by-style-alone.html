@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<script src="../include.js"></script>
+<script>
+promiseTest(async () => {
+    const server = httpTestServer();
+    const token = crypto.randomUUID();
+    const url = await server.createEcho("GET", "/style-wanted.woff", {
+        status: 200,
+        headers: { "Content-Type": "font/woff", "Access-Control-Allow-Origin": "*" },
+        body: "",
+        wait_for_unblock: token,
+    });
+
+    // display:none, so nothing this element names is ever laid out. `ex` still resolves against
+    // the first available font, so computing its style is what selects the face: a face wanted by
+    // style alone, before any text exists to lay out.
+    function probe(family, weight) {
+        const element = document.createElement("div");
+        element.style.cssText = `display:none;font:${weight} 40px "${family}",monospace;letter-spacing:10ex`;
+        document.body.append(element);
+        return element;
+    }
+
+    const fallbackSpacing = getComputedStyle(probe("MissingFont", 400)).letterSpacing;
+
+    // Whether the exact lookup finds the face or the font-matching algorithm reaches it, the ex
+    // length reads the metrics the face would give once it loads, so the face starts loading.
+    for (const [label, declaredWeight, usedWeight] of [["exact", 400, 400], ["matched", 700, 400]]) {
+        const face = new FontFace(`StyleWanted-${label}`, `url("${url}?${label}")`, { display: "block", weight: `${declaredWeight}` });
+        internals.setFontDisplayTime(face, 0);
+        document.fonts.add(face);
+        println(`${label}: before any style is computed, status = ${face.status}`);
+
+        const spacing = getComputedStyle(probe(face.family, usedWeight)).letterSpacing;
+        println(`${label}: computing a style that selects the face makes status = ${face.status}`);
+        println(`${label}: the pending face keeps the fallback's ex metrics = ${spacing === fallbackSpacing}`);
+        println(`${label}: document.fonts.status = ${document.fonts.status}`);
+    }
+
+    await fetch(`${server.baseURL}/unblock/${token}`);
+});
+</script>

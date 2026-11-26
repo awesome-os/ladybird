@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<script src="include.js"></script>
+<div id="container"><p style="user-select: none;">hidden</p><p>visible</p><p style="user-select: none;">also hidden</p><p>also visible</p></div>
+<script>
+    test(() => {
+        getSelection().selectAllChildren(document.getElementById("container"));
+
+        println(`range.toString(): "${getSelection().getRangeAt(0).toString()}"`);
+        println(`selection.toString(): "${getSelection().toString().replace(/\n/g, "\\n")}"`);
+
+        println(`clipboard text: "${internals.selectedTextForClipboard().replace(/\n/g, "\\n")}"`);
+    });
+</script>

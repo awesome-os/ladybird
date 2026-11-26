@@ -1,0 +1,376 @@
+{
+  "schema": "awesome-os.ladybird-chrome-parity.v1",
+  "scannedLibraries": 42,
+  "totalWebIdlInterfaces": 752,
+  "totalFixmes": 1348,
+  "totalTodos": 30,
+  "engineFlags": {
+    "libJsHasJitFiles": false,
+    "libWasmHasSimdFiles": false,
+    "hasLibDevTools": true,
+    "hasWebExtensionsEngine": false
+  },
+  "topLibraries": {
+    "LibWeb": {
+      "files": 3931,
+      "cppFiles": 2041,
+      "idlFiles": 752,
+      "fixmes": 1135,
+      "todos": 19,
+      "dbglnStubs": 17
+    },
+    "LibJS": {
+      "files": 858,
+      "cppFiles": 155,
+      "idlFiles": 0,
+      "fixmes": 1,
+      "todos": 1,
+      "dbglnStubs": 0
+    },
+    "LibWebCommon": {
+      "files": 270,
+      "cppFiles": 240,
+      "idlFiles": 0,
+      "fixmes": 30,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibWebView": {
+      "files": 253,
+      "cppFiles": 246,
+      "idlFiles": 0,
+      "fixmes": 52,
+      "todos": 1,
+      "dbglnStubs": 0
+    },
+    "LibWasm": {
+      "files": 215,
+      "cppFiles": 2,
+      "idlFiles": 0,
+      "fixmes": 0,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibMedia": {
+      "files": 193,
+      "cppFiles": 190,
+      "idlFiles": 0,
+      "fixmes": 20,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibGfx": {
+      "files": 185,
+      "cppFiles": 149,
+      "idlFiles": 0,
+      "fixmes": 9,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibCore": {
+      "files": 137,
+      "cppFiles": 132,
+      "idlFiles": 0,
+      "fixmes": 25,
+      "todos": 4,
+      "dbglnStubs": 0
+    },
+    "LibCompositing": {
+      "files": 128,
+      "cppFiles": 34,
+      "idlFiles": 0,
+      "fixmes": 0,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibMediaCodecs": {
+      "files": 97,
+      "cppFiles": 93,
+      "idlFiles": 0,
+      "fixmes": 1,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibDevTools": {
+      "files": 92,
+      "cppFiles": 90,
+      "idlFiles": 0,
+      "fixmes": 39,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibGC": {
+      "files": 76,
+      "cppFiles": 60,
+      "idlFiles": 0,
+      "fixmes": 0,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibIPC": {
+      "files": 76,
+      "cppFiles": 56,
+      "idlFiles": 0,
+      "fixmes": 2,
+      "todos": 0,
+      "dbglnStubs": 0
+    },
+    "LibUnicode": {
+      "files": 67,
+      "cppFiles": 59,
+      "idlFiles": 0,
+      "fixmes": 1,
+      "todos": 1,
+      "dbglnStubs": 0
+    },
+    "LibURL": {
+      "files": 51,
+      "cppFiles": 17,
+      "idlFiles": 0,
+      "fixmes": 2,
+      "todos": 0,
+      "dbglnStubs": 0
+    }
+  },
+  "featureMatrix": [
+    {
+      "id": "webgpu",
+      "area": "Graphics",
+      "chromeBaseline": "WebGPU + WGSL (Dawn)",
+      "idlCount": 0,
+      "sampleIdls": [],
+      "status": "missing",
+      "awesomeOsAccelerator": "Plug in awesome-os/sectium holo-display-webgpu + Dawn v11 CAS"
+    },
+    {
+      "id": "webgl",
+      "area": "Graphics",
+      "chromeBaseline": "WebGL 1 & WebGL 2",
+      "idlCount": 27,
+      "sampleIdls": [
+        "WebGLCompressedTextureS3tc.idl",
+        "WebGLCompressedTextureS3tcSrgb.idl",
+        "WebGLDebugRendererInfo.idl",
+        "WebGLDrawBuffers.idl",
+        "WebGLVertexArrayObjectOES.idl",
+        "WebGL2RenderingContext.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "ANGLE / Dawn WebGL-on-WebGPU backend"
+    },
+    {
+      "id": "service-worker",
+      "area": "PWA / Offline",
+      "chromeBaseline": "ServiceWorker + FetchEvent + Clients",
+      "idlCount": 6,
+      "sampleIdls": [
+        "Cache.idl",
+        "CacheStorage.idl",
+        "ServiceWorker.idl",
+        "ServiceWorkerContainer.idl",
+        "ServiceWorkerGlobalScope.idl",
+        "ServiceWorkerRegistration.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "Direct OPFS v11 CAS ServiceWorker runtime (holo-web-service-worker)"
+    },
+    {
+      "id": "opfs",
+      "area": "Storage",
+      "chromeBaseline": "Origin Private File System (FileSystemSyncAccessHandle)",
+      "idlCount": 1,
+      "sampleIdls": [
+        "StorageManager.idl"
+      ],
+      "status": "early-stub",
+      "awesomeOsAccelerator": "Map directly to B8G v11 CAS /var/lib/b8g/cas/v11/files/"
+    },
+    {
+      "id": "indexeddb",
+      "area": "Storage",
+      "chromeBaseline": "IndexedDB v3 (async transactions)",
+      "idlCount": 12,
+      "sampleIdls": [
+        "IDBCursor.idl",
+        "IDBCursorWithValue.idl",
+        "IDBDatabase.idl",
+        "IDBFactory.idl",
+        "IDBIndex.idl",
+        "IDBKeyRange.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "B8G CAS B-Tree / SQLite-free mmap store"
+    },
+    {
+      "id": "webrtc",
+      "area": "Real-Time",
+      "chromeBaseline": "RTCPeerConnection + DataChannel + MediaStream",
+      "idlCount": 27,
+      "sampleIdls": [
+        "RTCCertificate.idl",
+        "RTCDataChannel.idl",
+        "RTCDataChannelEvent.idl",
+        "RTCDtlsTransport.idl",
+        "RTCDTMFSender.idl",
+        "RTCDTMFToneChangeEvent.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "mTLS + B8G_ARENA_V1 zero-copy peer transport"
+    },
+    {
+      "id": "webcodecs",
+      "area": "Media",
+      "chromeBaseline": "WebCodecs (VideoDecoder / AudioDecoder / Hardware)",
+      "idlCount": 0,
+      "sampleIdls": [],
+      "status": "missing",
+      "awesomeOsAccelerator": "FFmpeg/VAAPI/omarchy-m1-video hardware bridge"
+    },
+    {
+      "id": "mse",
+      "area": "Media",
+      "chromeBaseline": "MediaSource Extensions (YouTube / Twitch)",
+      "idlCount": 3,
+      "sampleIdls": [
+        "MediaSource.idl",
+        "SourceBuffer.idl",
+        "SourceBufferList.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "Shared LibMedia + hardware H.264/AV1/VP9 pipeline"
+    },
+    {
+      "id": "webaudio",
+      "area": "Audio",
+      "chromeBaseline": "WebAudio API (AudioWorklet + Nodes)",
+      "idlCount": 8,
+      "sampleIdls": [
+        "AudioBuffer.idl",
+        "AudioBufferSourceNode.idl",
+        "AudioContext.idl",
+        "AudioNode.idl",
+        "AudioWorklet.idl",
+        "AudioWorkletGlobalScope.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "Low-latency B8G ring audio worklet"
+    },
+    {
+      "id": "webtransport",
+      "area": "Networking",
+      "chromeBaseline": "WebTransport (HTTP/3 QUIC)",
+      "idlCount": 0,
+      "sampleIdls": [],
+      "status": "missing",
+      "awesomeOsAccelerator": "QUIC/HTTP3 via LibHTTP + B8G transport"
+    },
+    {
+      "id": "websockets",
+      "area": "Networking",
+      "chromeBaseline": "WebSocket + WebSocketStream",
+      "idlCount": 1,
+      "sampleIdls": [
+        "WebSocket.idl"
+      ],
+      "status": "early-stub",
+      "awesomeOsAccelerator": "Native LibWebSocket (already present)"
+    },
+    {
+      "id": "webcomponents",
+      "area": "DOM / UI",
+      "chromeBaseline": "CustomElements + ShadowDOM + Declarative Shadow DOM",
+      "idlCount": 3,
+      "sampleIdls": [
+        "ShadowRoot.idl",
+        "CustomElementRegistry.idl",
+        "HTMLSlotElement.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "First-class <b8g-*> HTML5 Web Components"
+    },
+    {
+      "id": "streams",
+      "area": "Streams",
+      "chromeBaseline": "WHATWG Readable/Writable/TransformStream",
+      "idlCount": 11,
+      "sampleIdls": [
+        "ReadableStream.idl",
+        "ReadableStreamBYOBReader.idl",
+        "ReadableStreamBYOBRequest.idl",
+        "ReadableStreamDefaultController.idl",
+        "ReadableStreamDefaultReader.idl",
+        "ReadableStreamGenericReader.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "7-Tuple Web Streams zero-copy pipe"
+    },
+    {
+      "id": "workers",
+      "area": "Concurrency",
+      "chromeBaseline": "Dedicated/SharedWorker + BroadcastChannel",
+      "idlCount": 3,
+      "sampleIdls": [
+        "BroadcastChannel.idl",
+        "SharedWorker.idl",
+        "Worker.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "SharedArrayBuffer B8G_ARENA_V1 workers"
+    },
+    {
+      "id": "webauthn",
+      "area": "Security",
+      "chromeBaseline": "WebAuthn / Passkeys + WebCrypto",
+      "idlCount": 2,
+      "sampleIdls": [
+        "Crypto.idl",
+        "SubtleCrypto.idl"
+      ],
+      "status": "early-stub",
+      "awesomeOsAccelerator": "Ed25519 / FIDO2 hardware key bridge"
+    },
+    {
+      "id": "webhid-usb",
+      "area": "Hardware",
+      "chromeBaseline": "WebHID / WebUSB / WebSerial / Gamepad",
+      "idlCount": 4,
+      "sampleIdls": [
+        "Gamepad.idl",
+        "GamepadButton.idl",
+        "GamepadEvent.idl",
+        "GamepadHapticActuator.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "holo-device-host + modalias v11 CAS device bridge"
+    },
+    {
+      "id": "clipboard",
+      "area": "Desktop",
+      "chromeBaseline": "Async Clipboard API + Drag & Drop",
+      "idlCount": 6,
+      "sampleIdls": [
+        "Clipboard.idl",
+        "ClipboardEvent.idl",
+        "ClipboardItem.idl",
+        "DataTransfer.idl",
+        "DataTransferItem.idl",
+        "DataTransferItemList.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "Wayland wl_data_device / Win32 pipe bridge"
+    },
+    {
+      "id": "permissions",
+      "area": "Platform",
+      "chromeBaseline": "Permissions + Notifications + Push API",
+      "idlCount": 2,
+      "sampleIdls": [
+        "Notification.idl",
+        "Permissions.idl"
+      ],
+      "status": "early-stub",
+      "awesomeOsAccelerator": "host-manager declarative ChromeOS policy engine"
+    }
+  ],
+  "elapsedMs": 16598.5
+}
