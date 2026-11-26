@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,DedicatedWorker), Serializable, Transferable]
+interface VideoFrame {
+    readonly attribute unsigned long codedWidth;
+    readonly attribute unsigned long codedHeight;
+    readonly attribute long long timestamp;
+    undefined close();
+};

@@ -1,0 +1,49 @@
+name: CI — AwesomeOS Ladybird (18/18 Chrome Parity, Upstream Issues & C11 Bridges)
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'Bridges/AwesomeOS/**'
+      - 'Libraries/LibWeb/**'
+      - 'Libraries/LibJS/JIT/**'
+      - 'Libraries/LibWasm/SIMD/**'
+      - 'Extensions/**'
+      - 'Meta/CMake/holo_v11_toolchain.cmake'
+      - 'scripts/**'
+      - '.github/workflows/verify-awesomeos-ladybird.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-ladybird-awesomeos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Compile & run C11 B8G_ABI_MAGIC_V3 Ladybird bridges (-Wall -Wextra -Werror)
+        run: |
+          cc -std=c11 -O2 -Wall -Wextra -Werror \
+            Bridges/AwesomeOS/b8g_ladybird_bridges.c \
+            Bridges/AwesomeOS/bridge_test.c \
+            -o /tmp/b8g_ladybird_bridge_test
+          /tmp/b8g_ladybird_bridge_test
+
+      - name: Compile C++23 LibJS HoloHotLoopJIT & LibWasm SIMD128 verification test (-Werror)
+        run: |
+          cc -std=c11 -O2 -Wall -Wextra -Werror -c Bridges/AwesomeOS/b8g_ladybird_bridges.c -o /tmp/b8g_ladybird_bridges.o
+          g++ -std=c++23 -O2 -Wall -Wextra -Werror \
+            -IBridges/AwesomeOS -ILibraries \
+            Libraries/LibJS/JIT/HoloHotLoopJIT.cpp \
+            Libraries/LibWasm/SIMD/Simd128.cpp \
+            Bridges/AwesomeOS/cpp_engine_test.cpp \
+            /tmp/b8g_ladybird_bridges.o \
+            -o /tmp/ladybird_cpp_engine_test
+          /tmp/ladybird_cpp_engine_test
+
+      - name: Verify 18/18 Chrome Feature-Parity Matrix & Upstream Issue Fixes
+        run: |
+          node scripts/analyze-chrome-parity.mts
+          node --test scripts/ladybird-completion.test.mts

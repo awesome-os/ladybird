@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext, Serializable]
+interface FileSystemHandle {
+    readonly attribute DOMString kind;
+    readonly attribute USVString name;
+    Promise<boolean> isSameEntry(FileSystemHandle other);
+};

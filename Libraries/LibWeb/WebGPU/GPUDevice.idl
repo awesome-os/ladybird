@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface GPUDevice : EventTarget {
+    readonly attribute GPUQueue queue;
+    GPUBuffer createBuffer(GPUBufferDescriptor descriptor);
+    GPUShaderModule createShaderModule(GPUShaderModuleDescriptor descriptor);
+    GPUCommandEncoder createCommandEncoder();
+    undefined destroy();
+};
+
+dictionary GPUBufferDescriptor {
+    required unsigned long long size;
+    required unsigned long usage;
+    boolean mappedAtCreation = false;
+};
+
+dictionary GPUShaderModuleDescriptor {
+    required USVString code;
+};

@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface GPUCommandEncoder {
+    undefined copyBufferToBuffer(GPUBuffer source, unsigned long long sourceOffset, GPUBuffer destination, unsigned long long destinationOffset, unsigned long long size);
+};

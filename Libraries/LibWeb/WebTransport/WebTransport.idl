@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface WebTransport {
+    constructor(USVString url);
+    readonly attribute Promise<undefined> ready;
+    readonly attribute WebTransportDatagramDuplexStream datagrams;
+    Promise<WebTransportBidirectionalStream> createBidirectionalStream();
+    undefined close();
+};

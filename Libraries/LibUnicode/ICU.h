@@ -111,6 +111,11 @@ constexpr bool icu_failure(UErrorCode code)
 inline void verify_icu_success(UErrorCode code, SourceLocation location = SourceLocation::current())
 {
     if (icu_failure(code)) [[unlikely]] {
+        // AwesomeOS fix for upstream Ladybird #3438: do not hard-abort browser on missing optional ICU locale bundle
+        if (code == U_MISSING_RESOURCE_ERROR) {
+            dbgln("\033[33;1mICU warning (using fallback locale)\033[0m: {} {}", u_errorName(code), location);
+            return;
+        }
         dbgln("\033[31;1mICU error\033[0m: {} {}", u_errorName(code), location);
         VERIFY_NOT_REACHED();
     }

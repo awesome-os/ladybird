@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,DedicatedWorker), SecureContext]
+interface VideoDecoder : EventTarget {
+    readonly attribute DOMString state;
+    readonly attribute unsigned long decodeQueueSize;
+    undefined configure(VideoDecoderConfig config);
+    Promise<undefined> flush();
+    undefined reset();
+    undefined close();
+};
+
+dictionary VideoDecoderConfig {
+    required DOMString codec;
+    unsigned long codedWidth;
+    unsigned long codedHeight;
+};

@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker)]
+interface WebSocketStream {
+    constructor(USVString url);
+    readonly attribute USVString url;
+    readonly attribute Promise<WebSocketOpenInfo> opened;
+    readonly attribute Promise<WebSocketCloseInfo> closed;
+    undefined close(optional WebSocketCloseInfo closeInfo = {});
+};
+
+dictionary WebSocketOpenInfo {
+    ReadableStream readable;
+    WritableStream writable;
+    DOMString extensions;
+    DOMString protocol;
+};
+
+dictionary WebSocketCloseInfo {
+    unsigned short code;
+    USVString reason = "";
+};

@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker)]
+interface WebSocketError : DOMException {
+    readonly attribute unsigned short? closeCode;
+    readonly attribute USVString reason;
+};

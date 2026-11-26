@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext, Serializable]
+interface FileSystemFileHandle : FileSystemHandle {
+    Promise<File> getFile();
+    [Exposed=DedicatedWorker] Promise<FileSystemSyncAccessHandle> createSyncAccessHandle();
+};

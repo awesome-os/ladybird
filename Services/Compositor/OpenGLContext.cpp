@@ -508,33 +508,53 @@ bool OpenGLContext::allocate_vkimage_color_buffer(ColorBuffer& color_buffer, Gfx
 {
     VERIFY(m_skia_backend_context);
 
+    // AwesomeOS fix for upstream Ladybird #6922 & #7461: guard missing EGL DMABUF extension procs
+    // and fall back cleanly to RGBA8888 / CPU painting surface instead of SIGSEGV or EGL_NO_IMAGE abort.
+    if (!m_impl->ext_procs.query_dma_buf_formats || !m_impl->ext_procs.query_dma_buf_modifiers) {
+        dbgln("Compositor: EGL DMABUF query extensions unavailable; falling back to a CPU painting surface");
+        return false;
+    }
+
     VkFormat vulkan_format = VK_FORMAT_B8G8R8A8_UNORM;
     uint32_t drm_format = Gfx::vk_format_to_drm_format(vulkan_format);
 
-    // Ensure that our format is supported by the implementation.
-    // FIXME: try other formats if not?
     EGLint num_formats = 0;
     m_impl->ext_procs.query_dma_buf_formats(m_impl->display, 0, nullptr, &num_formats);
+    if (num_formats <= 0) {
+        dbgln("Compositor: Driver reported 0 DMABUF formats; falling back to a CPU painting surface");
+        return false;
+    }
     Vector<EGLint> egl_formats;
     egl_formats.resize(num_formats);
     m_impl->ext_procs.query_dma_buf_formats(m_impl->display, num_formats, egl_formats.data(), &num_formats);
     if (egl_formats.find(drm_format) == egl_formats.end()) {
-        dbgln("Compositor: DMABUF format {:#x} is not supported by this driver; falling back to a CPU painting surface", drm_format);
-        return false;
+        vulkan_format = VK_FORMAT_R8G8B8A8_UNORM;
+        drm_format = Gfx::vk_format_to_drm_format(vulkan_format);
+        if (egl_formats.find(drm_format) == egl_formats.end()) {
+            dbgln("Compositor: Neither BGRA8888 nor RGBA8888 DMABUF supported; falling back to a CPU painting surface");
+            return false;
+        }
     }
 
     EGLint num_modifiers = 0;
     m_impl->ext_procs.query_dma_buf_modifiers(m_impl->display, drm_format, 0, nullptr, nullptr, &num_modifiers);
     Vector<uint64_t> egl_modifiers;
-    egl_modifiers.resize(num_modifiers);
+    if (num_modifiers > 0)
+        egl_modifiers.resize(num_modifiers);
     Vector<EGLBoolean> external_only;
-    external_only.resize(num_modifiers);
-    m_impl->ext_procs.query_dma_buf_modifiers(m_impl->display, drm_format, num_modifiers, egl_modifiers.data(), external_only.data(), &num_modifiers);
+    if (num_modifiers > 0)
+        external_only.resize(num_modifiers);
+    if (num_modifiers > 0)
+        m_impl->ext_procs.query_dma_buf_modifiers(m_impl->display, drm_format, num_modifiers, egl_modifiers.data(), external_only.data(), &num_modifiers);
     Vector<uint64_t> renderable_modifiers;
     for (int i = 0; i < num_modifiers; ++i) {
         if (!external_only[i]) {
             renderable_modifiers.append(egl_modifiers[i]);
         }
+    }
+    if (renderable_modifiers.is_empty()) {
+        dbgln("Compositor: No renderable DMABUF modifiers for format {:#x}; falling back to a CPU painting surface", drm_format);
+        return false;
     }
 
     auto vulkan_image_or_error = Gfx::create_shared_vulkan_image(m_skia_backend_context->vulkan_context(), size.width(), size.height(), vulkan_format, renderable_modifiers);

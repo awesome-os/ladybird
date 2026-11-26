@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface WebTransportDatagramDuplexStream {
+    readonly attribute ReadableStream readable;
+    readonly attribute WritableStream writable;
+    readonly attribute unsigned long maxDatagramSize;
+};

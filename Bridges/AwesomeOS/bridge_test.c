@@ -211,11 +211,57 @@ static void test_webcodecs_backend_selection(void) {
     EXPECT_EQ_U64(sess.height, 2160U);
 }
 
+static void test_dns_https_type65_parser(void) {
+    /* RFC 9460 HTTPS RDATA:
+     * Priority = 1 (0x00, 0x01)
+     * TargetName = "." (0x00)
+     * SvcParam 1 (alpn): key=0x0001, len=0x0006, val="\x02h3\x02h2"
+     * SvcParam 3 (port): key=0x0003, len=0x0002, val=0x20fb (8443)
+     * SvcParam 5 (ech):  key=0x0005, len=0x0004, val=0xdeadbeef
+     */
+    const uint8_t rdata[] = {
+        0x00, 0x01,
+        0x00,
+        0x00, 0x01, 0x00, 0x06, 0x02, 'h', '3', 0x02, 'h', '2',
+        0x00, 0x03, 0x00, 0x02, 0x20, 0xFB,
+        0x00, 0x05, 0x00, 0x04, 0xDE, 0xAD, 0xBE, 0xEF
+    };
+    B8gDnsHttpsRecord rec;
+    EXPECT_EQ_INT(b8g_dns_parse_https_rdata(rdata, sizeof(rdata), &rec), B8G_OK);
+    EXPECT_EQ_U64(rec.magic, B8G_ABI_MAGIC_V3);
+    EXPECT_EQ_U64(rec.priority, 1U);
+    EXPECT_EQ_U64(rec.supports_h3, 1U);
+    EXPECT_EQ_U64(rec.supports_h2, 1U);
+    EXPECT_EQ_U64(rec.port, 8443U);
+    EXPECT_EQ_U64(rec.ech_len, 4U);
+    EXPECT_STREQ(rec.primary_alpn, "h3");
+}
+
+static void test_ublock_content_blocker_and_quic(void) {
+    B8gContentBlocker cb;
+    EXPECT_EQ_INT(b8g_content_blocker_init(&cb), B8G_OK);
+    EXPECT_EQ_INT(b8g_content_blocker_add_rule(&cb, "||doubleclick.net^"), B8G_OK);
+    EXPECT_EQ_INT(b8g_content_blocker_add_rule(&cb, "||google-analytics.com^"), B8G_OK);
+
+    EXPECT_EQ_INT(b8g_content_blocker_should_block(&cb, "ads.doubleclick.net"), 1);
+    EXPECT_EQ_INT(b8g_content_blocker_should_block(&cb, "DOUBLECLICK.NET"), 1);
+    EXPECT_EQ_INT(b8g_content_blocker_should_block(&cb, "awesome-os.com"), 0);
+    EXPECT_EQ_U64(cb.blocked_hits, 2U);
+
+    B8gQuicTransportRing qring;
+    EXPECT_EQ_INT(b8g_quic_ring_init(&qring, 1200U), B8G_OK);
+    EXPECT_EQ_INT(b8g_quic_send_datagram(&qring, 512U), B8G_OK);
+    EXPECT_EQ_INT(b8g_quic_send_datagram(&qring, 2000U), B8G_ERR_OVERFLOW);
+    EXPECT_EQ_U64(qring.bytes_queued, 512U);
+}
+
 int main(void) {
     test_abi_and_alignment();
     test_webgpu_ring_submit_drain_wraparound();
     test_opfs_v11_cas_bridge();
     test_webcodecs_backend_selection();
+    test_dns_https_type65_parser();
+    test_ublock_content_blocker_and_quic();
 
     if (g_failures > 0) {
         fprintf(stderr, "FAILED: %d assertion(s) failed\n", g_failures);

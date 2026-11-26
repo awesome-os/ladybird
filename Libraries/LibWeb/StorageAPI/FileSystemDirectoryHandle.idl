@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext, Serializable]
+interface FileSystemDirectoryHandle : FileSystemHandle {
+    Promise<FileSystemFileHandle> getFileHandle(USVString name, optional FileSystemGetFileOptions options = {});
+    Promise<FileSystemDirectoryHandle> getDirectoryHandle(USVString name, optional FileSystemGetDirectoryOptions options = {});
+    Promise<undefined> removeEntry(USVString name);
+};
+
+dictionary FileSystemGetFileOptions {
+    boolean create = false;
+};
+
+dictionary FileSystemGetDirectoryOptions {
+    boolean create = false;
+};

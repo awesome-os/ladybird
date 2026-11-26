@@ -129,6 +129,57 @@ const char *b8g_webcodecs_backend_name(B8gHwAccelBackend backend);
 int b8g_webcodecs_session_init(B8gWebCodecsSession *session, B8gCodecId codec_id, const char *modalias,
                                uint32_t width, uint32_t height);
 
+/* =========================================================================
+ * 4. DNS HTTPS (RFC 9460 TYPE 65 SVCB/HTTPS) Parser — Upstream Issue #5107
+ * ========================================================================= */
+
+#define B8G_DNS_ALPN_MAX 16U
+
+typedef struct B8gDnsHttpsRecord {
+    _Alignas(64) uint32_t magic;
+    uint16_t priority;
+    uint16_t port;       /* 0 if default 443 */
+    uint8_t supports_h3; /* 1 if "h3" advertised in SvcParam key 1 (alpn) */
+    uint8_t supports_h2; /* 1 if "h2" advertised in SvcParam key 1 (alpn) */
+    uint16_t ech_len;    /* Byte length of ECH config (SvcParam key 5), if any */
+    char primary_alpn[B8G_DNS_ALPN_MAX];
+} B8gDnsHttpsRecord;
+
+int b8g_dns_parse_https_rdata(const uint8_t *rdata, size_t rdata_len, B8gDnsHttpsRecord *out_rec);
+
+/* =========================================================================
+ * 5. ContentBlocker / uBlock MV3 Rule Matcher — Upstream Issue #976
+ * ========================================================================= */
+
+#define B8G_BLOCKER_MAX_RULES 64U
+#define B8G_BLOCKER_PATTERN_MAX 128U
+
+typedef struct B8gContentBlocker {
+    _Alignas(64) uint32_t magic;
+    uint32_t rule_count;
+    uint64_t blocked_hits;
+    char domain_rules[B8G_BLOCKER_MAX_RULES][B8G_BLOCKER_PATTERN_MAX];
+} B8gContentBlocker;
+
+int b8g_content_blocker_init(B8gContentBlocker *cb);
+int b8g_content_blocker_add_rule(B8gContentBlocker *cb, const char *rule);
+int b8g_content_blocker_should_block(B8gContentBlocker *cb, const char *request_host);
+
+/* =========================================================================
+ * 6. WebTransport QUIC Ring & LibJS Holo-JIT Cache
+ * ========================================================================= */
+
+typedef struct B8gQuicTransportRing {
+    _Alignas(64) uint32_t magic;
+    uint32_t head;
+    uint32_t tail;
+    uint32_t max_datagram_size;
+    uint64_t bytes_queued;
+} B8gQuicTransportRing;
+
+int b8g_quic_ring_init(B8gQuicTransportRing *ring, uint32_t max_datagram_size);
+int b8g_quic_send_datagram(B8gQuicTransportRing *ring, uint32_t payload_len);
+
 #ifdef __cplusplus
 }
 #endif

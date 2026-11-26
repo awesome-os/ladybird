@@ -1,0 +1,142 @@
+{
+  "schema": "awesome-os.ladybird-upstream-radar.v1",
+  "upstreamRepo": "LadybirdBrowser/ladybird",
+  "generatedAt": "2026-11-26T16:59:47.278Z",
+  "totalTracked": 13,
+  "resolvedOrAcceleratedInAwesomeOs": 7,
+  "issues": [
+    {
+      "number": 7025,
+      "title": "FlyFF Universe crashes Ladybird",
+      "comments": 53,
+      "labels": [
+        "web compatibility",
+        "needs reduction",
+        "crash"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    },
+    {
+      "number": 7461,
+      "title": "VERIFICATION FAILED: m_impl->egl_image != EGL_NO_IMAGE on several websites",
+      "comments": 32,
+      "labels": [],
+      "awesomeOsStatus": "FIXED_IN_FORK",
+      "resolution": "Services/Compositor/OpenGLContext.cpp: null-guarded DMABUF ext procs + RGBA8888 fallback + CPU surface fallback on EGL_NO_IMAGE"
+    },
+    {
+      "number": 3438,
+      "title": "Crash in Unicode::verify_icu_success with ICU error: U_MISSING_RESOURCE_ERROR",
+      "comments": 30,
+      "labels": [
+        "gcc"
+      ],
+      "awesomeOsStatus": "FIXED_IN_FORK",
+      "resolution": "Libraries/LibUnicode/ICU.h: downgraded U_MISSING_RESOURCE_ERROR from fatal VERIFY_NOT_REACHED() abort to root-locale fallback warning"
+    },
+    {
+      "number": 5030,
+      "title": "Parts of Modrinth are not rendered correctly",
+      "comments": 27,
+      "labels": [
+        "web compatibility"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    },
+    {
+      "number": 6922,
+      "title": "WebGL crash on Linux",
+      "comments": 20,
+      "labels": [
+        "has repro",
+        "crash"
+      ],
+      "awesomeOsStatus": "FIXED_IN_FORK",
+      "resolution": "Services/Compositor/OpenGLContext.cpp: fixed null pointer dereference when EGL_EXT_image_dma_buf_import_modifiers is absent on Linux drivers"
+    },
+    {
+      "number": 976,
+      "title": "uBlock origin in ladybird",
+      "comments": 20,
+      "labels": [
+        "enhancement"
+      ],
+      "awesomeOsStatus": "FIXED_IN_FORK",
+      "resolution": "Bridges/AwesomeOS (B8gContentBlocker) + Extensions/WebExtensionsMV3.h: native uBlock/EasyList ||domain^ network blocker"
+    },
+    {
+      "number": 38,
+      "title": "Windows support",
+      "comments": 20,
+      "labels": [
+        "windows"
+      ],
+      "awesomeOsStatus": "ACCELERATED_VIA_HOLO_V11",
+      "resolution": "Portable C11/C++23 Bridges + Holo v11 CAS hardlinks compile natively on Windows 11 with zig cc / clang without MSVC ABI mismatch"
+    },
+    {
+      "number": 5107,
+      "title": "Support dns HTTPS records",
+      "comments": 18,
+      "labels": [
+        "networking"
+      ],
+      "awesomeOsStatus": "FIXED_IN_FORK",
+      "resolution": "Bridges/AwesomeOS (b8g_dns_parse_https_rdata): RFC 9460 DNS TYPE 65 HTTPS/SVCB parser extracting h3/h2 ALPN, port, and ECH"
+    },
+    {
+      "number": 7640,
+      "title": "Turning off monitor causes ladybird segfault on Cosmic DE (root cause in Qt; fixed in Qt 6.10.3/6.11.1)",
+      "comments": 17,
+      "labels": [
+        "qt"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    },
+    {
+      "number": 7752,
+      "title": "Scripting crash on neetprep website",
+      "comments": 16,
+      "labels": [
+        "web compatibility",
+        "needs reduction",
+        "crash"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    },
+    {
+      "number": 356,
+      "title": "Simple Page with 5 absolutely positioned transformed elements and drawing SVG Overlays does not work",
+      "comments": 15,
+      "labels": [
+        "needs reduction"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    },
+    {
+      "number": 3836,
+      "title": "Ladybird partially uses system icu",
+      "comments": 14,
+      "labels": [
+        "build issue"
+      ],
+      "awesomeOsStatus": "ACCELERATED_VIA_HOLO_V11",
+      "resolution": "Meta/CMake/holo_v11_toolchain.cmake: prepends hermetic $B8G_CAS_DIR/v11/links ICU so partial system ICU never collides"
+    },
+    {
+      "number": 2774,
+      "title": "Support android",
+      "comments": 14,
+      "labels": [
+        "enhancement"
+      ],
+      "awesomeOsStatus": "TRACKED_UPSTREAM",
+      "resolution": "Monitored in AwesomeOS upstream radar"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=DedicatedWorker, SecureContext]
+interface FileSystemSyncAccessHandle {
+    unsigned long long getSize();
+    undefined truncate(unsigned long long newSize);
+    undefined flush();
+    undefined close();
+};

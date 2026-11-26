@@ -355,3 +355,183 @@ int b8g_webcodecs_session_init(B8gWebCodecsSession *session, B8gCodecId codec_id
     }
     return B8G_OK;
 }
+
+/* =========================================================================
+ * 4. DNS HTTPS (RFC 9460 TYPE 65 SVCB/HTTPS) Parser — Upstream Issue #5107
+ *    Wire RDATA: SvcPriority(2B) + TargetName(labels ending in 0x00) + SvcParams
+ *    SvcParam: Key(2B big-endian) + Len(2B big-endian) + Value(Len B)
+ *      Key 1 = alpn, Key 3 = port, Key 5 = ech
+ * ========================================================================= */
+
+static uint16_t b8g_rd_be16(const uint8_t *p) {
+    return (uint16_t)(((uint16_t)p[0] << 8) | (uint16_t)p[1]);
+}
+
+int b8g_dns_parse_https_rdata(const uint8_t *rdata, size_t rdata_len, B8gDnsHttpsRecord *out_rec) {
+    if (rdata == NULL || out_rec == NULL || rdata_len < 3U) {
+        return B8G_ERR_INVALID;
+    }
+    memset(out_rec, 0, sizeof(*out_rec));
+    out_rec->magic = B8G_ABI_MAGIC_V3;
+    out_rec->priority = b8g_rd_be16(rdata);
+
+    /* Walk uncompressed DNS labels of TargetName until 0x00 root label */
+    size_t pos = 2U;
+    while (pos < rdata_len) {
+        uint8_t label_len = rdata[pos++];
+        if (label_len == 0U) {
+            break;
+        }
+        if (label_len >= 64U || pos + label_len > rdata_len) {
+            return B8G_ERR_INVALID;
+        }
+        pos += label_len;
+    }
+
+    /* AliasMode (priority == 0) has no SvcParams */
+    if (out_rec->priority == 0U) {
+        return B8G_OK;
+    }
+
+    /* Parse SvcParams (Key, Length, Value) */
+    while (pos < rdata_len) {
+        if (pos + 4U > rdata_len) {
+            return B8G_ERR_INVALID;
+        }
+        uint16_t key = b8g_rd_be16(rdata + pos);
+        uint16_t val_len = b8g_rd_be16(rdata + pos + 2U);
+        pos += 4U;
+        if (pos + val_len > rdata_len) {
+            return B8G_ERR_INVALID;
+        }
+        const uint8_t *val = rdata + pos;
+
+        if (key == 1U) { /* alpn list: 1-byte len + string */
+            size_t apos = 0U;
+            while (apos < val_len) {
+                uint8_t alen = val[apos++];
+                if (alen == 0U || apos + alen > val_len) {
+                    return B8G_ERR_INVALID;
+                }
+                if (out_rec->primary_alpn[0] == '\0') {
+                    size_t cpy = alen < (B8G_DNS_ALPN_MAX - 1U) ? alen : (B8G_DNS_ALPN_MAX - 1U);
+                    memcpy(out_rec->primary_alpn, val + apos, cpy);
+                    out_rec->primary_alpn[cpy] = '\0';
+                }
+                if (alen == 2U && val[apos] == 'h' && val[apos + 1U] == '3') {
+                    out_rec->supports_h3 = 1U;
+                } else if (alen == 2U && val[apos] == 'h' && val[apos + 1U] == '2') {
+                    out_rec->supports_h2 = 1U;
+                }
+                apos += alen;
+            }
+        } else if (key == 3U && val_len == 2U) { /* port */
+            out_rec->port = b8g_rd_be16(val);
+        } else if (key == 5U) { /* ech */
+            out_rec->ech_len = val_len;
+        }
+
+        pos += val_len;
+    }
+    return B8G_OK;
+}
+
+/* =========================================================================
+ * 5. ContentBlocker / uBlock MV3 Rule Matcher — Upstream Issue #976
+ *    Supports Adblock Plus / uBlock Origin "||example.com^" domain anchors.
+ * ========================================================================= */
+
+int b8g_content_blocker_init(B8gContentBlocker *cb) {
+    if (cb == NULL) {
+        return B8G_ERR_INVALID;
+    }
+    memset(cb, 0, sizeof(*cb));
+    cb->magic = B8G_ABI_MAGIC_V3;
+    return B8G_OK;
+}
+
+int b8g_content_blocker_add_rule(B8gContentBlocker *cb, const char *rule) {
+    if (cb == NULL || cb->magic != B8G_ABI_MAGIC_V3 || rule == NULL) {
+        return B8G_ERR_INVALID;
+    }
+    if (cb->rule_count >= B8G_BLOCKER_MAX_RULES) {
+        return B8G_ERR_FULL;
+    }
+
+    /* Strip leading "||" and trailing "^" or "/" */
+    const char *start = rule;
+    if (start[0] == '|' && start[1] == '|') {
+        start += 2;
+    }
+    size_t len = 0U;
+    while (start[len] != '\0' && start[len] != '^' && start[len] != '/') {
+        len++;
+    }
+    if (len == 0U || len >= B8G_BLOCKER_PATTERN_MAX) {
+        return B8G_ERR_INVALID;
+    }
+
+    char *dst = cb->domain_rules[cb->rule_count++];
+    for (size_t i = 0U; i < len; ++i) {
+        dst[i] = b8g_ascii_tolower(start[i]);
+    }
+    dst[len] = '\0';
+    return B8G_OK;
+}
+
+int b8g_content_blocker_should_block(B8gContentBlocker *cb, const char *request_host) {
+    if (cb == NULL || cb->magic != B8G_ABI_MAGIC_V3 || request_host == NULL || request_host[0] == '\0') {
+        return 0;
+    }
+    size_t host_len = strlen(request_host);
+    char lower_host[256];
+    if (host_len >= sizeof(lower_host)) {
+        return 0;
+    }
+    for (size_t i = 0U; i < host_len; ++i) {
+        lower_host[i] = b8g_ascii_tolower(request_host[i]);
+    }
+    lower_host[host_len] = '\0';
+
+    for (uint32_t r = 0U; r < cb->rule_count; ++r) {
+        const char *pat = cb->domain_rules[r];
+        size_t pat_len = strlen(pat);
+        if (host_len == pat_len && strcmp(lower_host, pat) == 0) {
+            cb->blocked_hits++;
+            return 1;
+        }
+        if (host_len > pat_len &&
+            lower_host[host_len - pat_len - 1U] == '.' &&
+            strcmp(lower_host + (host_len - pat_len), pat) == 0) {
+            cb->blocked_hits++;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* =========================================================================
+ * 6. WebTransport QUIC Ring
+ * ========================================================================= */
+
+int b8g_quic_ring_init(B8gQuicTransportRing *ring, uint32_t max_datagram_size) {
+    if (ring == NULL || max_datagram_size == 0U) {
+        return B8G_ERR_INVALID;
+    }
+    memset(ring, 0, sizeof(*ring));
+    ring->magic = B8G_ABI_MAGIC_V3;
+    ring->max_datagram_size = max_datagram_size;
+    return B8G_OK;
+}
+
+int b8g_quic_send_datagram(B8gQuicTransportRing *ring, uint32_t payload_len) {
+    if (ring == NULL || ring->magic != B8G_ABI_MAGIC_V3) {
+        return B8G_ERR_INVALID;
+    }
+    if (payload_len > ring->max_datagram_size) {
+        return B8G_ERR_OVERFLOW;
+    }
+    ring->head++;
+    ring->bytes_queued += payload_len;
+    return B8G_OK;
+}

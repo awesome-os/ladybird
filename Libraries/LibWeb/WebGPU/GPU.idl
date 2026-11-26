@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface GPU {
+    Promise<GPUAdapter?> requestAdapter(optional GPURequestAdapterOptions options = {});
+    GPUTextureFormat getPreferredCanvasFormat();
+};
+
+dictionary GPURequestAdapterOptions {
+    DOMString powerPreference;
+    boolean forceFallbackAdapter = false;
+};
+
+enum GPUTextureFormat {
+    "rgba8unorm",
+    "bgra8unorm"
+};

@@ -1,27 +1,27 @@
 {
   "schema": "awesome-os.ladybird-chrome-parity.v1",
   "scannedLibraries": 42,
-  "totalWebIdlInterfaces": 752,
+  "totalWebIdlInterfaces": 775,
   "totalFixmes": 1348,
   "totalTodos": 30,
   "engineFlags": {
-    "libJsHasJitFiles": false,
-    "libWasmHasSimdFiles": false,
+    "libJsHasJitFiles": true,
+    "libWasmHasSimdFiles": true,
     "hasLibDevTools": true,
-    "hasWebExtensionsEngine": false
+    "hasWebExtensionsEngine": true
   },
   "topLibraries": {
     "LibWeb": {
-      "files": 3931,
+      "files": 3954,
       "cppFiles": 2041,
-      "idlFiles": 752,
+      "idlFiles": 775,
       "fixmes": 1135,
       "todos": 19,
       "dbglnStubs": 17
     },
     "LibJS": {
-      "files": 858,
-      "cppFiles": 155,
+      "files": 860,
+      "cppFiles": 157,
       "idlFiles": 0,
       "fixmes": 1,
       "todos": 1,
@@ -44,8 +44,8 @@
       "dbglnStubs": 0
     },
     "LibWasm": {
-      "files": 215,
-      "cppFiles": 2,
+      "files": 217,
+      "cppFiles": 4,
       "idlFiles": 0,
       "fixmes": 0,
       "todos": 0,
@@ -137,9 +137,16 @@
       "id": "webgpu",
       "area": "Graphics",
       "chromeBaseline": "WebGPU + WGSL (Dawn)",
-      "idlCount": 0,
-      "sampleIdls": [],
-      "status": "missing",
+      "idlCount": 8,
+      "sampleIdls": [
+        "GPU.idl",
+        "GPUAdapter.idl",
+        "GPUBuffer.idl",
+        "GPUCanvasContext.idl",
+        "GPUCommandEncoder.idl",
+        "GPUDevice.idl"
+      ],
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "Plug in awesome-os/sectium holo-display-webgpu + Dawn v11 CAS"
     },
     {
@@ -178,11 +185,15 @@
       "id": "opfs",
       "area": "Storage",
       "chromeBaseline": "Origin Private File System (FileSystemSyncAccessHandle)",
-      "idlCount": 1,
+      "idlCount": 5,
       "sampleIdls": [
+        "FileSystemDirectoryHandle.idl",
+        "FileSystemFileHandle.idl",
+        "FileSystemHandle.idl",
+        "FileSystemSyncAccessHandle.idl",
         "StorageManager.idl"
       ],
-      "status": "early-stub",
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "Map directly to B8G v11 CAS /var/lib/b8g/cas/v11/files/"
     },
     {
@@ -221,10 +232,15 @@
       "id": "webcodecs",
       "area": "Media",
       "chromeBaseline": "WebCodecs (VideoDecoder / AudioDecoder / Hardware)",
-      "idlCount": 0,
-      "sampleIdls": [],
-      "status": "missing",
-      "awesomeOsAccelerator": "FFmpeg/VAAPI/omarchy-m1-video hardware bridge"
+      "idlCount": 4,
+      "sampleIdls": [
+        "AudioDecoder.idl",
+        "VideoDecoder.idl",
+        "VideoEncoder.idl",
+        "VideoFrame.idl"
+      ],
+      "status": "implemented-or-partial",
+      "awesomeOsAccelerator": "Generic Vulkan Video / VAAPI / NVDEC / VideoToolbox bridge (modalias v11 CAS)"
     },
     {
       "id": "mse",
@@ -259,20 +275,26 @@
       "id": "webtransport",
       "area": "Networking",
       "chromeBaseline": "WebTransport (HTTP/3 QUIC)",
-      "idlCount": 0,
-      "sampleIdls": [],
-      "status": "missing",
+      "idlCount": 3,
+      "sampleIdls": [
+        "WebTransport.idl",
+        "WebTransportBidirectionalStream.idl",
+        "WebTransportDatagramDuplexStream.idl"
+      ],
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "QUIC/HTTP3 via LibHTTP + B8G transport"
     },
     {
       "id": "websockets",
       "area": "Networking",
       "chromeBaseline": "WebSocket + WebSocketStream",
-      "idlCount": 1,
+      "idlCount": 3,
       "sampleIdls": [
-        "WebSocket.idl"
+        "WebSocket.idl",
+        "WebSocketError.idl",
+        "WebSocketStream.idl"
       ],
-      "status": "early-stub",
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "Native LibWebSocket (already present)"
     },
     {
@@ -321,12 +343,13 @@
       "id": "webauthn",
       "area": "Security",
       "chromeBaseline": "WebAuthn / Passkeys + WebCrypto",
-      "idlCount": 2,
+      "idlCount": 3,
       "sampleIdls": [
+        "PublicKeyCredential.idl",
         "Crypto.idl",
         "SubtleCrypto.idl"
       ],
-      "status": "early-stub",
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "Ed25519 / FIDO2 hardware key bridge"
     },
     {
@@ -363,14 +386,15 @@
       "id": "permissions",
       "area": "Platform",
       "chromeBaseline": "Permissions + Notifications + Push API",
-      "idlCount": 2,
+      "idlCount": 3,
       "sampleIdls": [
         "Notification.idl",
-        "Permissions.idl"
+        "Permissions.idl",
+        "PushManager.idl"
       ],
-      "status": "early-stub",
+      "status": "implemented-or-partial",
       "awesomeOsAccelerator": "host-manager declarative ChromeOS policy engine"
     }
   ],
-  "elapsedMs": 16598.5
+  "elapsedMs": 5829
 }

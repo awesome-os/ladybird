@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface GPUBuffer {
+    readonly attribute unsigned long long size;
+    readonly attribute unsigned long usage;
+    undefined unmap();
+    undefined destroy();
+};

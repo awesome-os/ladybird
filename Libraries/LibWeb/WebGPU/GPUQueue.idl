@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: BSD-2-Clause
+[Exposed=(Window,Worker), SecureContext]
+interface GPUQueue {
+    undefined writeBuffer(GPUBuffer buffer, unsigned long long bufferOffset, BufferSource data);
+};
