@@ -42,7 +42,7 @@
 | **Storage** (`opfs`) | Origin Private File System (FileSystemSyncAccessHandle) | `early-stub` | 1 | Map directly to B8G v11 CAS /var/lib/b8g/cas/v11/files/ |
 | **Storage** (`indexeddb`) | IndexedDB v3 (async transactions) | `implemented-or-partial` | 12 | B8G CAS B-Tree / SQLite-free mmap store |
 | **Real-Time** (`webrtc`) | RTCPeerConnection + DataChannel + MediaStream | `implemented-or-partial` | 27 | mTLS + B8G_ARENA_V1 zero-copy peer transport |
-| **Media** (`webcodecs`) | WebCodecs (VideoDecoder / AudioDecoder / Hardware) | `missing` | 0 | FFmpeg/VAAPI/omarchy-m1-video hardware bridge |
+| **Media** (`webcodecs`) | WebCodecs (VideoDecoder / AudioDecoder / Hardware) | `missing` | 0 | Generic Vulkan Video / VAAPI / NVDEC / VideoToolbox bridge (modalias v11 CAS) |
 | **Media** (`mse`) | MediaSource Extensions (YouTube / Twitch) | `implemented-or-partial` | 3 | Shared LibMedia + hardware H.264/AV1/VP9 pipeline |
 | **Audio** (`webaudio`) | WebAudio API (AudioWorklet + Nodes) | `implemented-or-partial` | 8 | Low-latency B8G ring audio worklet |
 | **Networking** (`webtransport`) | WebTransport (HTTP/3 QUIC) | `missing` | 0 | QUIC/HTTP3 via LibHTTP + B8G transport |
