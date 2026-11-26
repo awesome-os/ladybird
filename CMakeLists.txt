@@ -116,6 +116,11 @@ add_lagom_library_install_rules(JSClangPlugin)
 add_subdirectory(AK)
 add_subdirectory(Libraries)
 
+option(ENABLE_AWESOME_OS_BRIDGES "Build Awesome-OS B8G_ABI_MAGIC_V3 C11 accelerator bridges" ON)
+if (ENABLE_AWESOME_OS_BRIDGES AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Bridges/AwesomeOS/CMakeLists.txt")
+    add_subdirectory(Bridges/AwesomeOS)
+endif()
+
 if (ENABLE_FUZZERS)
     add_subdirectory(Meta/Fuzzers)
 endif()
