@@ -1,3 +1,6 @@
+> [!NOTE]
+> Consolidated & evolved into https://github.com/awesome-os/chromium-baseline/tree/main/components/angrybird
+
 # Ladybird
 
 [Ladybird](https://ladybird.org) is a truly independent web browser, using a novel engine based on web standards.
